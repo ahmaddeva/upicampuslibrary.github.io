@@ -1,0 +1,26 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    ifstream myFileStream("SimpleFileTwo.txt");
+    if(!myFileStream.is_open()){
+        cout << "File failed to open" << endl;
+        return 0;
+    }
+    string name, jurusan;
+    string line;
+
+    while(getline(myFileStream, line)){
+        stringstream ss(line);
+        getline(ss, name, ',');
+        getline(ss, jurusan, ',');
+
+        cout << name << " " << jurusan << endl;
+    }
+    myFileStream.close();
+}
