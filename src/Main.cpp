@@ -1,22 +1,21 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <conio.h>
 #include <time.h>
 #include <string>
-#include <limits>
 
 using namespace std;
+struct buku{
+    string judul, pengarang, tahun_terbit, kode_buku; 
+};
 int getOption();
 int getBook();
-
 void login();
 
 int main()
 {
     system("cls");
     login();
-    ofstream filePeminjaman;
     label_choice:
     int choice = getOption();
     enum option{BUKU = 1, PEMINJAMAN, PENGEMBALIAN, KELUAR};
@@ -28,10 +27,12 @@ int main()
             int book_choice = getBook();
             while(book_choice != 4){
                 // List Buku
+                //manual
                 string buku1 = "Your Name";
                 string buku2 = "Weathering With You";
                 string buku3 = "Re:ZERO";
                 
+                ofstream filePeminjaman;
                 if (book_choice == 1)
                 {
                     filePeminjaman.open("data_peminjaman.txt", ios::app);
@@ -40,8 +41,7 @@ int main()
                     filePeminjaman.close();
                     cout << "Anda telah meminjam buku " << buku1 << "." << endl;
                     cout << "Tanggal Peminjaman: " << __DATE__ << endl;
-                    cout << "Press any key to continue...";
-                    getch();
+                    system("pause");
                     goto label_choice;
                 }
                 if (book_choice == 2)
@@ -52,8 +52,7 @@ int main()
                     filePeminjaman.close();
                     cout << "Anda telah meminjam buku " << buku2 << "." << endl;
                     cout << "Tanggal Peminjaman: " << __DATE__ << endl;
-                    cout << "Press any key to continue...";
-                    getch();
+                    system("pause");
                     goto label_choice;
                 }
                 if (book_choice == 3)
@@ -64,8 +63,7 @@ int main()
                     filePeminjaman.close();
                     cout << "Anda telah meminjam buku " << buku3 << "." << endl;
                     cout << "Tanggal Peminjaman: " << __DATE__ << endl;
-                    cout << "Press any key to continue...";
-                    getch();
+                    system("pause");
                     goto label_choice;
                 }
             }
@@ -109,7 +107,7 @@ int main()
 }
 
 void login(){
-    string lUsername, username, dUsername, dPassword, lPassword, password, nama, line;
+    string lUsername, username, lPassword, password, nama, line;
     int count;
     cout << "====================" << endl;
     cout << "Welcome!" << endl;
@@ -144,20 +142,22 @@ void login(){
 int getOption(){
     int choice;
     system("cls");
-    cout << "\nAplikasi Perpustakaan" << endl;
+    cout << "=======================" << endl;
+    cout << "Aplikasi Perpustakaan" << endl;
     cout << "=======================" << endl;
     cout << "1. Pilih buku" << endl;
     cout << "2. Daftar Peminjaman" << endl;
     cout << "3. Pengembalian" << endl;
     cout << "4. Keluar" << endl;
     cout << "=======================" << endl;
-    cout << "Silakan pilih (1-4): ";
+    cout << "Pilih menu (1-4): ";
     cin >> choice;
     return choice;
 }
 int getBook(){
     int choice;
     system("cls");
+    //manual
     cout << "\nPilih Buku" << endl;
     cout << "=======================" << endl;
     cout << "1. Your Name" << endl;
@@ -165,7 +165,7 @@ int getBook(){
     cout << "3. Re:ZERO" << endl;
     cout << "4. Kembali ke laman utama" << endl;
     cout << "=======================" << endl;
-    cout << "Silakan pilih (1-4): ";
+    cout << "Pilih menu (1-4): ";
     cin >> choice;
     return choice;
 }
