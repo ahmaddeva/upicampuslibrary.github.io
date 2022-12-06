@@ -65,6 +65,8 @@ int main()
                             system("pause");
                             goto label_choice;
                         } 
+                        
+                        i++;
                     }
                     cout << "Buku tidak ditemukan"<< endl;
                     system("pause");
