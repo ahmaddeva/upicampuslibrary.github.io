@@ -9,15 +9,15 @@
             "command": "g++",
             "args": [
                 "-std=gnu++14",
-                ".\\src\\Main.cpp",
+                ".\\Main.cpp",
                 "-o",
-                ".\\bin\\Main.exe",
+                ".\\Main.exe",
             ],
         },
         {
             "label": "Run",
             "type": "shell",
-            "command": ".\\bin\\Main",
+            "command": ".\\Main",
             "dependsOn": ["Compile"],
             "group": {
                 "kind": "build",
