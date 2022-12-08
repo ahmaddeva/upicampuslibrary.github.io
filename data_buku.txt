@@ -1,5 +1,5 @@
-Your Name,Makoto Shinkai,20001
-Weathering With You,Makoto Shinkai,20002
-Re:ZERO,Tapei Nagatsuki,20003
-Another,simarmata,20004
-Ngoding Skuy,simarmata,20005
+Your Name,Makoto Shinkai,20001,kosong
+Weathering With You,Makoto Shinkai,20002,kosong
+Re:ZERO,Tapei Nagatsuki,20003,kosong
+Another,simarmata,20004,kosong
+Ngoding Skuy,simarmata,20005,kosong
