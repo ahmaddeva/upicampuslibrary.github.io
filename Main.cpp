@@ -114,14 +114,12 @@ int main()
                 while(book_pilih != 0 && book_pilih != 99){
                     int this_book = book_pilih;
                     ofstream filePeminjaman;
-                    ofstream fileBuku;
                     ifstream buku_data;
                     string buku, pengarang, kodeBuku, status, line;
                     if (book_pilih == this_book)
                     {
                         int i = 0;
                         filePeminjaman.open("data_peminjaman.txt", ios::app);
-                        fileBuku.open("data_buku.txt", ios::app);
                         buku_data.open("data_buku.txt");
                         while (!buku_data.eof())
                         {
@@ -131,7 +129,6 @@ int main()
                             getline(ss, pengarang, ',');
                             getline(ss, kodeBuku, ',');
                             getline(ss, status, ',');
-                            
                             
                             if (i == this_book - 1)
                             {
@@ -187,9 +184,9 @@ int main()
                     
                     ifstream buku_data;
                     buku_data.open("data_buku.txt");
-                    string buku, pengarang ,kodeBuku, line;
+                    string buku, pengarang ,kodeBuku, status, line;
                     int i = 0, j = 0;
-                    string kotak_judulBuku[10], kotak_idBuku[10];
+                    string kotak_judulBuku[10], kotak_idBuku[10], kotak_pengarang[10], kotak_status[10];
 
                     while (getline(buku_data, line))
                     {
@@ -197,9 +194,11 @@ int main()
                         getline(ss, buku, ',');
                         getline(ss, pengarang, ',');
                         getline(ss, kodeBuku, ',');
-                        getline(ss, kodeBuku, ',');
+                        getline(ss, status, ',');
                         kotak_judulBuku[i] = buku;
                         kotak_idBuku[i] = kodeBuku;
+                        kotak_pengarang[i] = pengarang;
+                        kotak_status[i] = status;
 
                         i++;
                     }
@@ -218,31 +217,66 @@ int main()
                     for (int k = 0; k <= i; k++){
                         if (kotak_judulBuku[k] == searchBuku || kotak_idBuku[k] == searchBuku)
                         {
-                            cout << "Buku " << kotak_judulBuku[k] << " ditemukan" << endl;
-                            cout << "Apakah anda ingin meminjam buku tersebut (1/0)? ";
-                            cin >> pilih;
-                            if (pilih == 1)
+                            fstream read_file;
+                            read_file.open("data_buku.txt");
+                            vector<string> lines;
+                            string line;
+
+                            while(getline(read_file, line)){
+                                lines.push_back(line);
+                            }
+                            read_file.close();
+                            int line_number = 0;
+                            for (int i = 0; i < lines.size(); i++){
+                                if (lines[i] == kotak_judulBuku[k] + "," + kotak_pengarang[k] + "," + kotak_idBuku[k] + "," + kotak_status[k]){
+                                    line_number = i;
+                                };
+                            }
+                            ofstream write_file;
+                            write_file.open("data_buku.txt");
+                            for (int i = 0; i < lines.size(); i++)
                             {
-                            ofstream filePeminjaman;
-                            filePeminjaman.open("data_peminjaman.txt", ios::app);
-                            filePeminjaman << kotak_judulBuku[k] << ",";
-                            filePeminjaman << __DATE__ << ",";
-                            filePeminjaman << logUsername << endl;
-                            filePeminjaman.close();
-                            cout << "Anda telah meminjam buku " << kotak_judulBuku[k] << " | " << kotak_idBuku[k] << "." << endl;
-                            cout << "Tanggal Peminjaman: " << __DATE__ << endl;
-                            filePeminjaman.close();
-                            system("pause");
-                            goto label_pilih;
+                                if (i != line_number){
+                                    write_file << lines[i] <<endl;
+                                } else {
+                                    write_file << kotak_judulBuku[k] + "," + kotak_pengarang[k] + "," + kotak_idBuku[k] + "," + "kosong" << endl;
+                                }
+                            }
+                            write_file.close();
+                            cout << "Buku " << kotak_judulBuku[k] << " ditemukan" << endl;
+                            if (kotak_status[k] == "kosong")
+                            {
+                                cout << "Buku " << kotak_judulBuku[k] << " sedang dipinjam" << endl;
+                                system("pause");
+                                goto label_pilih;
+                            } else {
+                                cout << "Apakah anda ingin meminjam buku tersebut (1/0)? ";
+                                cin >> pilih;
+                                if (pilih == 1)
+                                {
+                                ofstream filePeminjaman;
+                                filePeminjaman.open("data_peminjaman.txt", ios::app);
+                                filePeminjaman << kotak_judulBuku[k] << ",";
+                                filePeminjaman << __DATE__ << ",";
+                                filePeminjaman << logUsername << endl;
+                                filePeminjaman.close();
+                                cout << "Anda telah meminjam buku " << kotak_judulBuku[k] << " | " << kotak_idBuku[k] << "." << endl;
+                                cout << "Tanggal Peminjaman: " << __DATE__ << endl;
+                                filePeminjaman.close();
+                                system("pause");
+                                goto label_pilih;
+                                }
+                                else
+                                {
+                                system("pause");
+                                goto label_pilih;
+                                }
+                            }
                         }
-                        else
-                        {
-                            system("pause");
-                            goto label_pilih;
-                        }
+                        else {
+                            
                         }
                     }
-
                     cout << "Buku tidak ditemukan"<<endl;
                     system("pause");
                     goto label_pilih;
