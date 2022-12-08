@@ -4,14 +4,21 @@
 #include <time.h>
 #include <string>
 #include <limits>
+#include <stdio.h>
+
 using namespace std;
 
 struct buku{
     string judul, pengarang; 
 };
+
 struct mahasiswa{
     string nama, password, NIM; 
 };
+
+// Active User
+string lUsername, username, lPassword, password, nama, line;
+
 int menu();
 int menu2();
 int menuBuku();
@@ -20,6 +27,7 @@ void registrasi();
 
 int main()
 {
+    HOME:
     system("cls");
     int pilih = menu();
     switch (pilih)
@@ -31,13 +39,18 @@ int main()
         login();
         break;
     case 3:
-        return 0;    
+        cout << "Masukan pilihan yang valid" << endl;
+        system("pause");
+        goto HOME;   
     default:
+        cout << "Masukan pilihan yang valid" << endl;
+        system("pause");
+        goto HOME;
         break;
     }
     label_pilih:
     int pilih2 = menu2();
-    enum option{BUKU = 1, PEMINJAMAN, PENGEMBALIAN, KELUAR};
+    enum option{BUKU = 1, PEMINJAMAN, PENGEMBALIAN, DAFTARPENGEMBALIAN, KELUAR};
 
     // ANCHOR Perubahan buku manual menjadi database
     while(pilih2 != KELUAR){
@@ -45,7 +58,7 @@ int main()
         {
         case BUKU: {
             int book_pilih = menuBuku();
-            while(book_pilih != 5 && book_pilih != 4){
+            while(book_pilih != 0 && book_pilih != 5){
                 int this_book = book_pilih;
                 
                 ofstream filePeminjaman;
@@ -66,7 +79,8 @@ int main()
                         if (i == this_book - 1)
                         {
                             filePeminjaman << buku << ",";
-                            filePeminjaman << "\t" << __DATE__ << endl;
+                            filePeminjaman << "\t" << __DATE__ << ",";
+                            filePeminjaman << lUsername << endl;
                             filePeminjaman.close();
                             cout << "Anda telah meminjam buku " << buku << " | " << pengarang << "." << endl;
                             buku_data.close();
@@ -81,58 +95,95 @@ int main()
                     goto label_pilih;
                 }
             }
-            if (book_pilih == 4){
-                string aBuku[5];
-                string judul, line, buku, pengarang, pBuku;
-                int hasilCari;
+            if (book_pilih == 0){
+                
                 ifstream buku_data;
-                cout << "Masukkan judul buku: ";
-                cin >> judul;
+
                 buku_data.open("data_buku.txt");
-                while (!buku_data.eof())
-                    {
-                        getline(buku_data, line);
-                        stringstream ss(line);
-                        getline(ss, buku, ',');
-                        getline(ss, pengarang, ',');
-                        if (judul == buku)
-                        {
-                            hasilCari = 1;
-                            pBuku = pengarang;
-                        }
-                    }
+                string buku, pengarang ,id_buku, line;
+                int i = 0, j = 0;
+                string kotak_judulBuku[10], kotak_idBuku[10];
+
+                while (getline(buku_data, line))
+                {
+                    stringstream ss(line);
+                    getline(ss, buku, ',');
+                    getline(ss, pengarang, ',');
+                    getline(ss, id_buku, ',');
+                    
+                    kotak_judulBuku[i] = buku;
+                    kotak_idBuku[i] = id_buku;
+
+                    i++;
+                }
                 buku_data.close();
-                if (hasilCari == 0){
-                    cout << "Buku tidak ditemukan" << endl;
-                } else {
-                    char pilih = 'n';
-                    cout << "Buku " << judul << " ditemukan" << endl;
-                    cout << "Apakah anda ingin meminjam buku tersebut? (y/n)" << endl;
-                    cin >> pilih;
-                    if (pilih == 'y'){
-                        ofstream filePeminjaman;
-                        filePeminjaman.open("data_peminjaman.txt", ios::app);
-                        filePeminjaman << "\n";
-                        filePeminjaman << judul << ",";
-                        filePeminjaman << "\t" << __DATE__ << endl;
-                        filePeminjaman.close();
-                        cout << "Anda telah meminjam buku " << judul << " | " << pBuku << "." << endl;
-                        cout << "Tanggal Peminjaman: " << __DATE__ << endl;
-                    } else {
-                        system("pause");
-                        goto label_pilih;
+
+                string searchBuku;
+                int k = 0, pilih;
+
+                cin.clear();
+                cin.sync();
+                system("cls");
+                cout << "Ketik judul atau kode buku yang dicari"<< endl;
+                cout << "==================="<< endl;
+                cout << "Masukan kata kunci : "; 
+                getline(cin, searchBuku);
+
+                for (int k = 0; k <= i; k++){
+                    if (kotak_judulBuku[k] == searchBuku || kotak_idBuku[k] == searchBuku)
+                    {
+                         cout << "Buku " << kotak_judulBuku[k] << " ditemukan" << endl;
+                         cout << "Apakah anda ingin meminjam buku tersebut (1/0)? ";
+                         cin >> pilih;
+                         if (pilih == 1)
+                         {
+                            ofstream filePeminjaman;
+                            filePeminjaman.open("data_peminjaman.txt", ios::app);
+                            filePeminjaman << kotak_judulBuku[k] << ",";
+                            filePeminjaman << __DATE__ << ",";
+                            filePeminjaman << lUsername << endl;
+                            filePeminjaman.close();
+                            cout << "Anda telah meminjam buku " << kotak_judulBuku[k] << " | " << kotak_idBuku[k] << "." << endl;
+                            cout << "Tanggal Peminjaman: " << __DATE__ << endl;
+                            filePeminjaman.close();
+                            system("pause");
+                            goto label_pilih;
+                         }
+                         else
+                         {
+                            system("pause");
+                            goto label_pilih;
+                         }
                     }
                 }
+
+                cout << "Buku tidak ditemukan"<<endl;
+                system("pause");
+                goto label_pilih;
             } 
-            // cout << "Terima kasih dan sampai jumpa!";   
+ 
             system("pause");
             goto label_pilih;               
         }break;
         
         case PEMINJAMAN: {
+            string userNow;
+            ifstream dataUser("data_mahasiswa.txt");
+            while(!dataUser.eof()){
+                getline(dataUser, line);
+                stringstream ss(line);
+                getline(ss, username, ',');
+                getline(ss, password, ',');
+                getline(ss, nama, ',');
+                if (lUsername == username)
+                {
+                    userNow = username;
+                }
+            }
+
             string line;
             ifstream file("data_peminjaman.txt");
-            string judul, tanggal_peminjaman;
+            string judul, tanggal_peminjaman, peminjam;
             system("cls");
             cout << "Tabel Peminjaman"<< endl; 
             cout << "=========================================="<< endl; 
@@ -142,8 +193,12 @@ int main()
                 stringstream ss(line);
                 getline(ss, judul, ',');
                 getline(ss, tanggal_peminjaman, ',');
+                getline(ss, peminjam, ',');
 
-                cout << judul << " " << tanggal_peminjaman << endl;
+                if (peminjam == userNow)
+                {
+                    cout << judul << " " << tanggal_peminjaman << " " << peminjam << endl;
+                }
             }
             file.close();
             cout << endl;
@@ -152,23 +207,104 @@ int main()
         }break; 
         
         case PENGEMBALIAN: {
-            cout << "hello world" << endl;
+            ofstream filePengembalian;
+            string buku, pengarang ,line, idBuku;
+            filePengembalian.open("data_pengembalian.txt", ios::app);
+            ifstream buku_data;
+
+            string kode_buku;
+            cout << "Ketik kode buku yang dikembalikan : ";
+            cin>> kode_buku;
+
+            buku_data.open("data_buku.txt");
+            int i = 0;
+            while (!buku_data.eof())
+            {
+                getline(buku_data, line);
+                stringstream ss(line);
+                getline(ss, buku, ',');
+                getline(ss, pengarang, ',');
+                getline(ss, idBuku, ',');
+
+                if (kode_buku == idBuku)
+                {
+                    filePengembalian << buku << ",";
+                    filePengembalian << "\t" << __DATE__ << ",";
+                    filePengembalian << lUsername << endl;
+                    filePengembalian.close();
+                    cout << "Buku " << buku << " | " << pengarang << " Telah Dikembalikan." << endl;
+                    buku_data.close();
+                    cout << "Tanggal Pengembalian : " << __DATE__ << endl;
+                    system("pause");
+                    goto label_pilih;
+                }
+                i++;
+            }
+            cout << "Buku tidak ditemukan" << endl;
+            system("pause");
+            goto label_pilih;
+        }break; 
+
+        case DAFTARPENGEMBALIAN: {
+            string userNow;
+            ifstream dataUser("data_mahasiswa.txt");
+            while(!dataUser.eof()){
+                getline(dataUser, line);
+                stringstream ss(line);
+                getline(ss, username, ',');
+                getline(ss, password, ',');
+                getline(ss, nama, ',');
+                if (lUsername == username)
+                {
+                    userNow = username;
+                }
+            }
+
+            string line;
+            ifstream file("data_pengembalian.txt");
+            string judul, tanggal_pengembalian, pengembali;
+            system("cls");
+            cout << "Tabel Pengembalian"<< endl; 
+            cout << "=========================================="<< endl; 
+            cout << "Judul Buku\t\t" << "Tanggal pengembalian"<< endl; 
+            cout << "=========================================="<< endl; 
+            while(getline(file, line)){
+                stringstream ss(line);
+                getline(ss, judul, ',');
+                getline(ss, tanggal_pengembalian, ',');
+                getline(ss, pengembali, ',');
+
+                if (pengembali == userNow)
+                {
+                    cout << judul << " " << tanggal_pengembalian << endl;
+                }
+            }
+            file.close();
+            cout << endl;
             system("pause");
             goto label_pilih;
         }break; 
         
         default:
             cout << "Masukkan pilihan yang benar" << endl;
+            system("pause");
+            goto label_pilih;
             break;
         }
     }
     cout << "Terima kasih dan sampai jumpa!" << endl;
+    system("pause");
+    string *lUsername = NULL;
+    string *lPassword = NULL;
+    string *nama = NULL;
+    system("cls");
+    goto HOME;
     cin.get();
     return 0;
 }
 
 void login(){
-    string lUsername, username, lPassword, password, nama, line;
+    mahasiswa mhs;
     int count = 0;
     cout << "====================" << endl;
     cout << "Welcome!" << endl;
@@ -224,7 +360,7 @@ void registrasi(){
     main();
 }
 int menu(){
-    int pilih;
+    int pilih = 0;
     system("cls");
     cout << "=======================" << endl;
     cout << "Aplikasi Perpustakaan" << endl;
@@ -241,16 +377,33 @@ int menu(){
 
 int menu2(){
     int pilih;
+    mahasiswa mhs;
+    string userNow;
+    ifstream dataUser("data_mahasiswa.txt");
+    while (!dataUser.eof())
+    {
+        getline(dataUser, line);
+        stringstream ss(line);
+        getline(ss, username, ',');
+        getline(ss, password, ',');
+        getline(ss, nama, ',');
+        if (lUsername == username)
+        {
+            mhs.NIM = lUsername;
+            mhs.nama = nama;
+        }
+    }
     system("cls");
     cout << "=======================" << endl;
-    cout << "Aplikasi Perpustakaan" << endl;
+    cout << "Aplikasi Perpustakaan | " << mhs.nama << endl;
     cout << "=======================" << endl;
-    cout << "1. Pilih buku" << endl;
+    cout << "1. Peminjaman" << endl;
     cout << "2. Daftar Peminjaman" << endl;
     cout << "3. Pengembalian" << endl;
-    cout << "4. Keluar" << endl;
+    cout << "4. Daftar Pengembalian" << endl;
+    cout << "5. Keluar" << endl;
     cout << "=======================" << endl;
-    cout << "Pilih menu (1-4): ";
+    cout << "Pilih menu: ";
     cin >> pilih;
     return pilih;
 }
@@ -258,15 +411,33 @@ int menuBuku(){
     int pilih;
     system("cls");
     //manual
-    cout << "\nPilih Buku" << endl;
     cout << "=======================" << endl;
-    cout << "1. Your Name" << endl;
-    cout << "2. Weathering With You" << endl;
-    cout << "3. Re:ZERO" << endl;
-    cout << "4. Cari Buku" << endl;
+    cout << "Pilih Buku" << endl;
+    cout << "=======================" << endl;
+    cout << "0. Cari Buku" << endl;
     cout << "5. Kembali ke laman utama" << endl;
     cout << "=======================" << endl;
-    cout << "Pilih menu (1-5): ";
+    cout << "List Buku" << endl;
+    cout << "=======================" << endl;
+
+    ifstream listBuku;
+    listBuku.open("data_buku.txt");
+    string listJudulBuku, listLineBuku;
+    int listNo = 1;
+
+    while (getline(listBuku,listLineBuku))
+    {
+        stringstream ss(listLineBuku);
+        getline(ss, listJudulBuku, ',');
+        cout << listNo << ". " << listJudulBuku << endl;
+        listNo++;
+    }
+    
+    // cout << "1. Your Name" << endl;
+    // cout << "2. Weathering With You" << endl;
+    // cout << "3. Re:ZERO" << endl;
+    cout << "=======================" << endl;
+    cout << "Pilih menu: ";
     cin >> pilih;
     return pilih;
 }

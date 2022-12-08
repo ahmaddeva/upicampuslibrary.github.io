@@ -1,3 +1,4 @@
-2204501,password,winter simarmata,
+2204501,password,winter simarmata
 2204148,pass,Alfeus Martinus
 2204,pass,Winter
+2200679,password123,Raqhin Kusmanadinata
