@@ -9,7 +9,7 @@
 
 using namespace std;
 struct buku{
-    string judul, pengarang; 
+    string judul, pengarang, kode, status; 
 };
 
 struct mahasiswa{
@@ -45,10 +45,12 @@ int main()
     case 3:
         return 0;
     default:
-        cout << "Masukan pilihan yang valid" << endl;
-        system("pause");
-        goto HOME;
-        break;
+        {
+            cout << "Masukan pilihan yang valid" << endl;
+            system("pause");
+            main();
+            break;
+        }
     }
     label_pilih:
     int pilih2;
@@ -58,6 +60,7 @@ int main()
         while (pilih2 != KELUAR){
             switch (pilih2){
                 case KELOLABUKU: {
+                    KELOLA_BUKU:
                     int input;
                     string line;
                     ifstream file("data_buku.txt");
@@ -73,34 +76,120 @@ int main()
                         getline(ss, pengarang, ',');
                         getline(ss, kodeBuku, ',');
                         getline(ss, status, ',');
+                        cout << judul << " " << pengarang << " " << kodeBuku << " " << status << endl;
                     }
-                    cout << judul << " " << pengarang << " " << kodeBuku << status << endl;
                     file.close();
                     cout << "\n "<< endl;
                     cout << "[1] Tambah Buku" << endl;
                     cout << "[2] Hapus Buku" << endl;
                     cout << "Masukkan pilihan: ";
                     cin >> input;
+                    cin.ignore(numeric_limits<streamsize>::max(),'\n');
                     switch (input)
                     {
                     case 1:
                         {
                             // CASE TAMBAH BUKU :)
+                            buku bk;
+                            system("cls");
+                            // input data
+                            cout << "Masukkan judul buku: ";
+                            getline(cin, bk.judul);
+                            cout << "Masukkan nama pengarang: ";
+                            getline(cin, bk.pengarang);
+                            cout << "Masukkan kode buku: ";
+                            getline(cin, bk.kode);
+                            bk.status = "tersedia";
+
+                            ofstream FileBuku;
+                            FileBuku.open("data_buku.txt", ios::app);
+                            FileBuku << bk.judul;
+                            FileBuku << ",";
+                            FileBuku << bk.pengarang;
+                            FileBuku << ",";
+                            FileBuku << bk.kode;
+                            FileBuku << ",";
+                            FileBuku << bk.status << endl;
+                            FileBuku.close();
+                            cout << "Buku berhasil ditambah" << endl;
+                            system("pause");
+                            goto KELOLA_BUKU;
                         }
                         break;
                     case 2:
                         {
                             // CASE HAPUS BUKU :)
+                            string buku, pengarang, kodeBuku, status, line, inputKode;
+                            int hapus;
+                            cout << "Masukkan kode buku: ";
+                            cin >> inputKode;
+
+                            ifstream buku_data;
+                            buku_data.open("data_buku.txt");
+                            while (!buku_data.eof())
+                            {
+                                getline(buku_data, line);
+                                stringstream ss(line);
+                                getline(ss, buku, ',');
+                                getline(ss, pengarang, ',');
+                                getline(ss, kodeBuku, ',');
+                                getline(ss, status, ',');
+                                
+                                if (inputKode == kodeBuku){
+                                    fstream read_file;
+                                read_file.open("data_buku.txt");
+                                vector<string> lines;
+                                string line;
+
+                                while(getline(read_file, line)){
+                                    lines.push_back(line);
+                                }
+                                read_file.close();
+                                int line_number = 0;
+                                for (int i = 0; i < lines.size(); i++){
+                                    if (lines[i] == buku + "," + pengarang + "," + kodeBuku + "," + status){
+                                        line_number = i;
+                                    };
+                                }
+                                buku_data.close();
+                                ofstream write_file;
+                                write_file.open("data_buku.txt");
+                                for (int i = 0; i < lines.size(); i++)
+                                {
+                                    if (i != line_number){
+                                        write_file << lines[i] <<endl;
+                                        hapus = 1;
+                                    }
+                                }
+                                write_file.close();
+                                }
+                            }
+                            if(hapus == 1){
+                                cout << "Data Berhasil Dihapus" << endl;
+                                system("pause");
+                                goto KELOLA_BUKU;
+                            }
                         }
+                        break;
                     default:
                         break;
                     }
                 }
                 break;
-                
                 default:
                     break;
                 }
+        }
+        if(pilih2 == KELUAR){
+            cout << "Terima kasih dan sampai jumpa!" << endl;
+            system("pause");
+            string *logUsername = NULL;
+            string *logPassword = NULL;
+            string *nama = NULL;
+            system("cls");
+            goto HOME;
+            cin.get();
+            return 0;
         }
     } else {
         pilih2 = menuMahasiswa();
@@ -158,7 +247,6 @@ int main()
                                     }
                                 }
                                 write_file.close();
-
                                 if (status == "kosong"){
                                     cout << "Buku sedang dipinjam" << endl;
                                 } else if(status == "tersedia"){
@@ -281,8 +369,6 @@ int main()
                     system("pause");
                     goto label_pilih;
                 } 
-    
-                system("pause");
                 goto label_pilih;               
             }break;
             
@@ -328,7 +414,7 @@ int main()
             
             case PENGEMBALIAN: {
                 ofstream filePengembalian;
-                string buku, pengarang ,line, idBuku;
+                string buku, pengarang ,line, idBuku, status;
                 filePengembalian.open("data_pengembalian.txt", ios::app);
                 ifstream buku_data;
 
@@ -345,8 +431,35 @@ int main()
                     getline(ss, buku, ',');
                     getline(ss, pengarang, ',');
                     getline(ss, idBuku, ',');
+                    getline(ss, status, ',');
                     if (kode_buku == idBuku)
                     {
+                        fstream read_file;
+                        read_file.open("data_buku.txt");
+                        vector<string> lines;
+                        string line;
+
+                        while(getline(read_file, line)){
+                            lines.push_back(line);
+                        }
+                        read_file.close();
+                        int line_number = 0;
+                        for (int i = 0; i < lines.size(); i++){
+                            if (lines[i] == buku + "," + pengarang + "," + idBuku + "," + status){
+                                line_number = i;
+                            };
+                        }
+                        ofstream write_file;
+                        write_file.open("data_buku.txt");
+                        for (int i = 0; i < lines.size(); i++)
+                        {
+                            if (i != line_number){
+                                write_file << lines[i] <<endl;
+                            } else {
+                                write_file << buku + "," + pengarang + "," + idBuku + "," + "tersedia" << endl;
+                            }
+                        }
+                        write_file.close();
                         filePengembalian << buku << ",";
                         filePengembalian << "\t" << __DATE__ << ",";
                         filePengembalian << logUsername << endl;
@@ -424,8 +537,6 @@ int main()
         }
 
     }
-    
-    
 }
 
 void login(){

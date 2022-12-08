@@ -1,7 +1,5 @@
 Your Name,Makoto Shinkai,20001,kosong
-Weathering With You,Makoto Shinkai,20002,kosong
-Re:ZERO,Tapei Nagatsuki,20003,kosong
-Another,simarmata,20004,kosong
+Weathering With You,Makoto Shinkai,20002,tersedia
+Re:ZERO,Tapei Nagatsuki,20003,tersedia
+Another,simarmata,20004,tersedia
 Ngoding Skuy,simarmata,20005,tersedia
-Berilmu,adriano,20006,kosong
-Beriman Skuy,gabe,20007,tersedia
