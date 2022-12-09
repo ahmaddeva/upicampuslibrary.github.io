@@ -6,6 +6,7 @@
 #include <limits>
 #include <stdio.h>
 #include <vector>
+#include <iomanip>
 
 using namespace std;
 struct buku{
@@ -66,17 +67,21 @@ int main()
                     ifstream file("data_buku.txt");
                     string judul, pengarang, kodeBuku, status;
                     system("cls");
-                    cout << "                  Tabel Buku                  "<< endl; 
-                    cout << "=============================================="<< endl; 
-                    cout << "Judul Buku\t" << "Pengarang\t"<< "Kode\t" << "Status" << endl; 
-                    cout << "=============================================="<< endl; 
+                    cout << "                              Tabel Buku                               "<< endl; 
+                    cout << "======================================================================="<< endl; 
+                    cout << "|Judul Buku              |Pengarang          |Kode Buku    |Status    |"<< endl; 
+                    cout << "======================================================================="<< endl; 
                     while(getline(file, line)){
                         stringstream ss(line);
                         getline(ss, judul, ',');
                         getline(ss, pengarang, ',');
                         getline(ss, kodeBuku, ',');
                         getline(ss, status, ',');
-                        cout << judul << " " << pengarang << " " << kodeBuku << " " << status << endl;
+                        // cout << judul << " " << pengarang << " " << kodeBuku << " " << status << endl;
+                        cout<<"| "<<setiosflags(ios::left)<<setw(23)<<judul<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(18)<<pengarang<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(12)<<kodeBuku<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(9)<<status<<"|"<< endl;
                     }
                     file.close();
                     cout << "\n "<< endl;
@@ -392,9 +397,9 @@ int main()
                 string judul, tanggal_peminjaman, peminjam;
                 system("cls");
                 cout << "Tabel Peminjaman"<< endl; 
-                cout << "=========================================="<< endl; 
-                cout << "Judul Buku\t\t" << "Tanggal Peminjaman"<< endl; 
-                cout << "=========================================="<< endl; 
+                cout << "===================================================================="<< endl; 
+                cout << "|Judul Buku              |Tanggal Peminjaman          |Peminjam    |"<< endl; 
+                cout << "===================================================================="<< endl; 
                 while(getline(file, line)){
                     stringstream ss(line);
                     getline(ss, judul, ',');
@@ -403,7 +408,10 @@ int main()
 
                     if (peminjam == userNow)
                     {
-                        cout << judul << " " << tanggal_peminjaman << " " << peminjam << endl;
+                        // cout << judul << " " << tanggal_peminjaman << " " << peminjam << endl;
+                        cout<<"| "<<setiosflags(ios::left)<<setw(23)<<judul<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(27)<<tanggal_peminjaman<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(11)<<peminjam<<"|"<<endl;
                     }
                 }
                 file.close();
@@ -496,10 +504,10 @@ int main()
                 ifstream file("data_pengembalian.txt");
                 string judul, tanggal_pengembalian, pengembali;
                 system("cls");
-                cout << "Tabel Pengembalian"<< endl; 
-                cout << "=========================================="<< endl; 
-                cout << "Judul Buku\t\t" << "Tanggal pengembalian"<< endl; 
-                cout << "=========================================="<< endl; 
+                 cout << "Tabel Pengembalian"<< endl; 
+                cout << "========================================================="<< endl; 
+                cout << "|Judul Buku              |Tanggal Pengembalian          |"<< endl; 
+                cout << "========================================================="<< endl; 
                 while(getline(file, line)){
                     stringstream ss(line);
                     getline(ss, judul, ',');
@@ -508,7 +516,9 @@ int main()
 
                     if (pengembali == userNow)
                     {
-                        cout << judul << " " << tanggal_pengembalian << endl;
+                        // cout << judul << " " << tanggal_pengembalian << endl;
+                        cout<<"| "<<setiosflags(ios::left)<<setw(23)<<judul<<"|";
+                        cout<<" "<<setiosflags(ios::left)<<setw(25)<<tanggal_pengembalian<<"|"<<endl;
                     }
                 }
                 file.close();
